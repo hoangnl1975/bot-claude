@@ -1,6 +1,7 @@
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
+const express = require('express');
 
 const bot = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
 
@@ -30,11 +31,22 @@ bot.on('message', async (msg) => {
         );
 
         const reply = response.data.content[0].text;
-
         bot.sendMessage(chatId, reply);
 
     } catch (error) {
         console.error(error.response?.data || error.message);
         bot.sendMessage(chatId, "Bot lỗi 😅");
     }
+});
+
+// 🚀 Thêm server Express để Railway nhận app là đang chạy
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  res.send("Bot Claude Telegram is running!");
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
